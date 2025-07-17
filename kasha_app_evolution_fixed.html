@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasha - Educación Financiera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFCCD5 50%, #E5F3FF 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #FFB6C1 0%, #87CEEB 100%);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            background: #FF6B9D;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .app-title {
+            font-size: 48px;
+            color: #FF6B9D;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .name-input {
+            padding: 15px 20px;
+            border: 3px solid #FF6B9D;
+            border-radius: 25px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            width: 300px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .name-input:focus {
+            border-color: #FF1493;
+            box-shadow: 0 0 15px rgba(255, 20, 147, 0.3);
+            transform: scale(1.05);
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #FF6B9D, #FF1493);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.6);
+        }
+
+        .main-app {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF6B9D, #FF1493);
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 32px;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            margin: 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .motivational-phrase {
+            font-size: 18px;
+            color: #FF6B9D;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px;
+            background: #FFE5F1;
+            border-radius: 15px;
+            min-width: 80px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF1493;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: #FFE5F1;
+            border: none;
+            padding: 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            color: #FF1493;
+            font-weight: bold;
+            flex: 1;
+            margin: 2px;
+            min-width: 80px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #FF6B9D;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .challenge-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .challenge-text {
+            font-size: 18px;
+            margin: 20px 0;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #FF6B9D, #FF1493);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .character-selection {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .character {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .character:hover, .character.selected {
+            background: #FFE5F1;
+            transform: scale(1.1);
+        }
+
+        .character-img {
+            font-size: 60px;
+            margin-bottom: 10px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .character-level {
+            background: #FF6B9D;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .evolution-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            background: linear-gradient(45deg, gold, orange);
+            opacity: 0;
+            animation: evolutionGlow 2s ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes evolutionGlow {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+        }
+
+        .upgrade-section {
+            background: linear-gradient(45deg, #FFE5F1, #E5F3FF);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .progress-bar {
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 20px;
+            background: linear-gradient(45deg, #FF6B9D, #FF1493);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.evolution {
+            background: linear-gradient(45deg, gold, orange);
+            color: black;
+            font-size: 18px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .link-btn {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: #FF1493;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid #FFE5F1;
+            display: block;
+        }
+
+        .link-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.3);
+            border-color: #FF6B9D;
+            text-decoration: none;
+            color: #FF1493;
+        }
+
+        @media (max-width: 768px) {
+            .navigation {
+                padding: 5px 0;
+            }
+            
+            .nav-btn {
+                font-size: 10px;
+                padding: 8px 4px;
+            }
+            
+            .character-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .name-input {
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de Bienvenida -->
+    <div id="welcomeScreen" class="welcome-screen">
+        <div class="logo">🐷</div>
+        <h1 class="app-title">Kasha</h1>
+        <p style="font-size: 18px; margin-bottom: 30px; color: #666;">¡Aprende a ahorrar de forma divertida!</p>
+        <input type="text" id="userName" class="name-input" placeholder="Escribe tu nombre aquí" maxlength="20">
+        <button id="startBtn" class="start-btn">¡Comenzar!</button>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div id="mainApp" class="main-app">
+        <div class="header">
+            <h1>🐷 Kasha</h1>
+        </div>
+
+        <div class="user-info">
+            <div class="motivational-phrase" id="motivationalPhrase">¡Hola! Comienza tu aventura de ahorro</div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalSoles">0</div>
+                    <div>Soles</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="completedChallenges">0</div>
+                    <div>Retos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="currentStreak">0</div>
+                    <div>Racha (días)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Sección Inicio -->
+            <div id="inicio" class="section active">
+                <h2 style="text-align: center; color: #FF1493; margin-bottom: 20px;">¡Hola <span id="welcomeName">Amigo</span>! 👋</h2>
+                
+                <div class="character-selection">
+                    <div class="character selected" data-character="pig">
+                        <div class="character-img" id="pigEmoji">🐷</div>
+                        <div>Cerdito</div>
+                        <div class="character-level" id="pigLevel">Nivel 1</div>
+                    </div>
+                    <div class="character" data-character="dog">
+                        <div class="character-img" id="dogEmoji">🐶</div>
+                        <div>Perrito</div>
+                        <div class="character-level" id="dogLevel">Nivel 1</div>
+                    </div>
+                    <div class="character" data-character="cat">
+                        <div class="character-img" id="catEmoji">🐱</div>
+                        <div>Gatito</div>
+                        <div class="character-level" id="catLevel">Nivel 1</div>
+                    </div>
+                </div>
+
+                <div class="upgrade-section">
+                    <h3>Progreso hacia la siguiente evolución</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <p id="progressText">0/100 soles para evolucionar</p>
+                    <button id="upgradeBtn" class="btn" disabled>Evolucionar Personaje (100 soles)</button>
+                </div>
+            </div>
+
+            <!-- Sección Retos -->
+            <div id="retos" class="section">
+                <h2 style="text-align: center; color: #FF1493; margin-bottom: 20px;">Retos de Ahorro 💪</h2>
+                
+                <div class="challenge-card">
+                    <h3>Reto del Día</h3>
+                    <div class="challenge-text" id="currentChallenge">¡Presiona "Generar Reto" para comenzar!</div>
+                    <button id="generateChallengeBtn" class="btn">🎲 Generar Reto</button>
+                    <button id="completeChallengeBtn" class="btn" disabled>✅ Completar Reto</button>
+                </div>
+            </div>
+
+            <!-- Sección Más sobre el ahorro -->
+            <div id="masahorro" class="section">
+                <h2 style="text-align: center; color: #FF1493; margin-bottom: 20px;">Más sobre el ahorro 📚</h2>
+                
+                <p style="text-align: center; margin-bottom: 30px; color: #666;">
+                    Explora estos recursos educativos para aprender más sobre el ahorro y las finanzas personales:
+                </p>
+
+                <div class="links-grid">
+                    <a href="https://www.santander.com/es/stories/5-juegos-para-ahorrar-de-forma-divertida" target="_blank" class="link-btn">
+                        🎮 5 Juegos para Ahorrar de Forma Divertida
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=VQXuo-wa_VA" target="_blank" class="link-btn">
+                        📺 Video: Consejos de Ahorro
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Zb8tlvCVYs4" target="_blank" class="link-btn">
+                        📺 Video: Educación Financiera
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=9EyhDDGrM8o" target="_blank" class="link-btn">
+                        📺 Video: Finanzas para Jóvenes
+                    </a>
+                    <a href="https://www.bbva.com/es/salud-financiera/que-es-el-ahorro-y-como-ahorrar-mejor-con-estos-consejos/" target="_blank" class="link-btn">
+                        💡 Qué es el Ahorro - BBVA
+                    </a>
+                    <a href="https://pruebat.org/lo-que-debes-saber-sobre-tus-finanzas-personales/juego-trivia-del-ahorro/25167-444853" target="_blank" class="link-btn">
+                        🧩 Trivia del Ahorro
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" data-section="inicio">🏠 Inicio</button>
+            <button class="nav-btn" data-section="retos">💪 Retos</button>
+            <button class="nav-btn" data-section="masahorro">📚 Más</button>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Variables globales
+        let userData = {
+            name: '',
+            totalSoles: 0,
+            completedChallenges: 0,
+            currentStreak: 0,
+            selectedCharacter: 'pig',
+            characterLevels: {
+                pig: 1,
+                dog: 1,
+                cat: 1
+            }
+        };
+
+        let currentChallenge = null;
+
+        // Evoluciones de personajes por nivel
+        const characterEvolutions = {
+            pig: ['🐷', '🐽', '🐖', '🥓', '👑🐷'],
+            dog: ['🐶', '🐕', '🦮', '🐕‍🦺', '👑🐕'],
+            cat: ['🐱', '🐈', '🐈‍⬛', '🦁', '👑🐱']
+        };
+
+        // Retos disponibles
+        const challenges = [
+            "Ahorra las monedas que encuentres hoy en tus bolsillos",
+            "No compres ese snack y guarda ese dinero",
+            "Camina en lugar de tomar transporte y ahorra el pasaje",
+            "Prepara tu almuerzo en casa en lugar de comprarlo",
+            "Ahorra el vuelto de tu próxima compra",
+            "No compres esa bebida y toma agua",
+            "Busca cupones de descuento antes de comprar",
+            "Vende algo que ya no uses",
+            "Ahorra el dinero de una pequeña golosina",
+            "Haz una lista antes de comprar para evitar gastos innecesarios"
+        ];
+
+        // Frases motivacionales
+        const motivationalPhrases = [
+            "¡Cada sol cuenta para tu futuro! 💰",
+            "¡Eres un ahorrador increíble! 🌟",
+            "¡Sigue así, vas por buen camino! 🚀",
+            "¡Tu esfuerzo vale la pena! 💪",
+            "¡Cada reto te acerca a tus metas! 🎯",
+            "¡El ahorro es tu superpoder! ⚡",
+            "¡Construyendo tu futuro paso a paso! 🏗️"
+        ];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Event listeners
+            document.getElementById('startBtn').addEventListener('click', startApp);
+            document.getElementById('generateChallengeBtn').addEventListener('click', generateChallenge);
+            document.getElementById('completeChallengeBtn').addEventListener('click', completeChallenge);
+            document.getElementById('upgradeBtn').addEventListener('click', upgradeCharacter);
+            
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    showSection(this.dataset.section);
+                });
+            });
+
+            // Character selection
+            document.querySelectorAll('.character').forEach(char => {
+                char.addEventListener('click', function() {
+                    selectCharacter(this.dataset.character);
+                });
+            });
+
+            // Enter key on name input
+            document.getElementById('userName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startApp();
+                }
+            });
+
+            // Load saved data
+            loadUserData();
+            updateMotivationalPhrase();
+            updateCharacterDisplay();
+        }
+
+        function startApp() {
+            const nameInput = document.getElementById('userName');
+            const name = nameInput.value.trim();
+            
+            if (name === '') {
+                showNotification('¡Por favor escribe tu nombre!', 'error');
+                nameInput.focus();
+                return;
+            }
+
+            userData.name = name;
+            document.getElementById('welcomeName').textContent = name;
+            
+            // Hide welcome screen and show main app
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            saveUserData();
+            showNotification(`¡Bienvenido ${name}! 🎉`);
+        }
+
+        function generateChallenge() {
+            const randomIndex = Math.floor(Math.random() * challenges.length);
+            currentChallenge = challenges[randomIndex];
+            
+            document.getElementById('currentChallenge').textContent = currentChallenge;
+            document.getElementById('generateChallengeBtn').disabled = true;
+            document.getElementById('completeChallengeBtn').disabled = false;
+            
+            showNotification('¡Nuevo reto generado! 🎯');
+        }
+
+        function completeChallenge() {
+            if (!currentChallenge) return;
+            
+            // Add rewards
+            userData.totalSoles += Math.floor(Math.random() * 20) + 10; // 10-30 soles
+            userData.completedChallenges++;
+            userData.currentStreak++;
+            
+            // Update UI
+            updateStats();
+            updateProgress();
+            
+            // Reset challenge
+            currentChallenge = null;
+            document.getElementById('currentChallenge').textContent = '¡Reto completado! Genera uno nuevo.';
+            document.getElementById('generateChallengeBtn').disabled = false;
+            document.getElementById('completeChallengeBtn').disabled = true;
+            
+            saveUserData();
+            showNotification('¡Reto completado! 🎉');
+        }
+
+        function upgradeCharacter() {
+            if (userData.totalSoles >= 100) {
+                userData.totalSoles -= 100;
+                
+                // Evolucionar el personaje seleccionado
+                const currentLevel = userData.characterLevels[userData.selectedCharacter];
+                const maxLevel = characterEvolutions[userData.selectedCharacter].length;
+                
+                if (currentLevel < maxLevel) {
+                    userData.characterLevels[userData.selectedCharacter]++;
+                    
+                    // Animación de evolución
+                    animateEvolution(userData.selectedCharacter);
+                    
+                    updateCharacterDisplay();
+                    updateStats();
+                    updateProgress();
+                    saveUserData();
+                    
+                    showNotification(`¡${getCharacterName(userData.selectedCharacter)} evolucionó al nivel ${userData.characterLevels[userData.selectedCharacter]}! ⭐`, 'evolution');
+                } else {
+                    showNotification('¡Tu personaje ya está al nivel máximo! 👑');
+                }
+            }
+        }
+
+        function animateEvolution(character) {
+            const characterElement = document.querySelector(`[data-character="${character}"]`);
+            const glowElement = document.createElement('div');
+            glowElement.className = 'evolution-glow';
+            characterElement.appendChild(glowElement);
+            
+            setTimeout(() => {
+                glowElement.remove();
+            }, 2000);
+        }
+
+        function updateCharacterDisplay() {
+            // Actualizar emojis y niveles para todos los personajes
+            Object.keys(userData.characterLevels).forEach(character => {
+                const level = userData.characterLevels[character];
+                const emoji = characterEvolutions[character][level - 1] || characterEvolutions[character][0];
+                
+                document.getElementById(`${character}Emoji`).textContent = emoji;
+                document.getElementById(`${character}Level`).textContent = `Nivel ${level}`;
+            });
+        }
+
+        function getCharacterName(character) {
+            const names = {
+                pig: 'Cerdito',
+                dog: 'Perrito',
+                cat: 'Gatito'
+            };
+            return names[character] || 'Personaje';
+        }
+
+        function selectCharacter(character) {
+            userData.selectedCharacter = character;
+            
+            // Update visual selection
+            document.querySelectorAll('.character').forEach(char => {
+                char.classList.remove('selected');
+            });
+            document.querySelector(`[data-character="${character}"]`).classList.add('selected');
+            
+            // Update progress display for selected character
+            updateProgress();
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+        }
+
+        function updateStats() {
+            document.getElementById('totalSoles').textContent = userData.totalSoles;
+            document.getElementById('completedChallenges').textContent = userData.completedChallenges;
+            document.getElementById('currentStreak').textContent = userData.currentStreak;
+        }
+
+        function updateProgress() {
+            const progress = (userData.totalSoles % 100);
+            const progressPercentage = progress;
+            
+            document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+            document.getElementById('progressText').textContent = `${progress}/100 soles para evolucionar`;
+            
+            const upgradeBtn = document.getElementById('upgradeBtn');
+            const selectedCharacterLevel = userData.characterLevels[userData.selectedCharacter];
+            const maxLevel = characterEvolutions[userData.selectedCharacter].length;
+            
+            if (userData.totalSoles >= 100 && selectedCharacterLevel < maxLevel) {
+                upgradeBtn.disabled = false;
+                upgradeBtn.textContent = `Evolucionar ${getCharacterName(userData.selectedCharacter)} (100 soles)`;
+            } else if (selectedCharacterLevel >= maxLevel) {
+                upgradeBtn.disabled = true;
+                upgradeBtn.textContent = `${getCharacterName(userData.selectedCharacter)} está al máximo nivel 👑`;
+            } else {
+                upgradeBtn.disabled = true;
+                upgradeBtn.textContent = `Evolucionar ${getCharacterName(userData.selectedCharacter)} (100 soles)`;
+            }
+        }
+
+        function updateMotivationalPhrase() {
+            const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+            document.getElementById('motivationalPhrase').textContent = randomPhrase;
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        function saveUserData() {
+            const dataToSave = {
+                ...userData,
+                currentChallenge: currentChallenge,
+                lastSave: new Date().toISOString()
+            };
+            // Simulated save - in a real app, this would save to a database
+            console.log('Datos guardados:', dataToSave);
+        }
+
+        function loadUserData() {
+            // Simulated load - in a real app, this would load from a database
+            updateStats();
+            updateProgress();
+            updateCharacterDisplay();
+        }
+
+        // Update motivational phrase every 30 seconds
+        setInterval(updateMotivationalPhrase, 30000);
+    </script>
+</body>
+</html>
